@@ -117,10 +117,12 @@ public class JKSKeyStoreUtil {
 			
 			if (alias == null) {
 				logger.warning(String.format("Can not suitable alias for cert %s", getDN(cert)));
-			} else if (containsAlias(alias)) {
-				logger.warning(String.format( "%s alias already exists (%s)", alias, getDN(cert) )); 
 			} else {
-				logger.fine("Adding Cert with alias: " + alias);
+				while (containsAlias(alias)) {
+					logger.warning(String.format("%s alias already exists (%s)", alias, getDN(cert)));
+					alias += "-dup";
+				}
+				logger.info("Adding Cert with alias: " + alias);
 				keyStore.setCertificateEntry(alias, cert);
 			}
 		} catch (Exception e) {
